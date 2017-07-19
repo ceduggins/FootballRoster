@@ -1,6 +1,6 @@
 # FootballRoster
 
-{
+
        public frmMain()
         {
          List<Player> _FootballRoster = new List<Player>(10);
