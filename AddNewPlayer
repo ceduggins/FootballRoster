@@ -1,0 +1,47 @@
+public frmAddNewPlayer()
+        {
+            InitializeComponent();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (txtNameNP.Text != String.Empty)
+            {
+                Player p = new Player();
+                 p.Name = txtNameNP.Text;
+                 p.Team = txtTeamNP.Text;
+                p.Birthday = Convert.ToDateTime( txtBirthdayNP.Text);
+                p.Height= Convert.ToDouble(txtHeightNP.Text);
+               p.Weight = Convert.ToDouble (txtWeightNP.Text);
+                p.Salary = Convert.ToDouble(txtSalaryNP.Text);
+
+                DialogResult = DialogResult.OK;
+                this.Tag = p;
+            }
+            else if (txtNameNP.Text == String.Empty)
+            {
+                MessageBox.Show("Enter valid name!");
+            } // not sure what to write
+            else if (Convert.ToDateTime(txtBirthdayNP.Text).Year > 1994)
+            {
+                MessageBox.Show("Enter valid birthday!");
+            }
+            else if (Convert.ToDouble(txtHeightNP.Text) < 96 || Convert.ToDouble(txtHeightNP.Text) > 24)
+            {
+                MessageBox.Show("Enter valid height!");
+            }
+            else if (Convert.ToDouble(txtWeightNP.Text) > 600 || Convert.ToDouble(txtWeightNP.Text) < 90)
+            {
+                MessageBox.Show("Enter valid weight!");
+            } 
+            else if (Convert.ToDouble (txtSalaryNP.Text) < 0)
+            {
+                MessageBox.Show("Enter valid salary amount!");
+            }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            CancelButton = btnCancel;
+        }
+    }
