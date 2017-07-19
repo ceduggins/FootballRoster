@@ -1,173 +1,224 @@
 # FootballRoster
 
-
-       public frmMain()
+ public frmMain()
         {
-         List<Player> _FootballRoster = new List<Player>(10);
-          string sort;
             InitializeComponent();
-        }
-        private void txtName_TextChanged(object sender, EventArgs e)
-        {
+            
+            List<Player> _FootballRoster = new List<Player>();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
             AcceptButton = btnAdd;
-            btnDisplay.Enabled = true;
             btnAdd.Enabled = false;
 
-            double height = double.Parse(txtHeight.Text);
-            double weight = double.Parse(txtWeight.Text);
-            double salary = double.Parse(txtSalary.Text);
-            DateTime birthday = DateTime.Parse(txtBDay.Text);
-
-            if (rbCanCurr.Checked)
+            frmAddNewPlayer np = new frmAddNewPlayer();
+            if (np.ShowDialog() == DialogResult.OK)
             {
-                height = (height / 39.3701);
-                weight = (weight / 2.204622);
-                salary = (salary * 1.31);
-            }
-            _FootballRoster.Add(new Player(txtName.Text, txtTeam.Text, birthday, height, weight, salary));
-
-        }
-        private void ClearControls()
-        {
-            txtName.Text = string.Empty;
-            txtTeam.Text = string.Empty;
-            txtBDay.Text = string.Empty;
-            txtHeight.Text = string.Empty;
-            txtWeight.Text = string.Empty;
-            txtSalary.Text = string.Empty;
-            txtDisplay.Text = string.Empty;
-
-            _FootballRoster.Clear();
-        }
-
-        private void gbNewPlayer_Enter(object sender, EventArgs e)
-        {
-
-        }
-        
-
-        private void btnDisplay_Click(object sender, EventArgs e)
-        {
-            btnDisplay.Enabled = false;
-
-            txtDisplay.AppendText(" -- ROSTER--" + "\n" + _FootballRoster.Count + "\r\n");
-            txtDisplay.AppendText("SORTED BY: " + "\n" + sort + "\r\n" + "\r\n");
-
-            RosterDisplay();
-            foreach (Player p in _FootballRoster)
-            {
-                txtDisplay.Text += "Name:" + p.Name + "\r\n";
-                txtDisplay.Text += "Team" + p.Team + "\r\n";
-                txtDisplay.Text += "Birthday:" + Convert.ToString(p.Birthday) + "\r\n";
-                txtDisplay.Text += "Height" + Convert.ToString(p.Height) + "\r\n";
-                txtDisplay.Text += "Weight: " + Convert.ToString(p.Weight) + "\r\n";
-                txtDisplay.Text += "Salary: " + Convert.ToString(p.Salary) + "\r\n" + "\r\n";
+                Player p = new Player();
+                p = (Player)np.Tag;
+                _FootballRoster.Add(p);
+                BindData();
             }
         }
-
 
         private void btnDataFill_Click(object sender, EventArgs e)
         {
             btnDataFill.Enabled = false;
+            _FootballRoster.Add(new Player("Jim Brown", "Cleveland Browns", new DateTime (1936, 02, 17), 232, 74, 65000));
+            _FootballRoster.Add(new Player("Deion Sanders", "Baltimore Ravens", new DateTime(1967, 08, 09), 192, 73, 1300000));
+            _FootballRoster.Add(new Player("Odell Beckham", "New York Giants", new DateTime(1992, 11, 05), 194, 72, 1839027));
+            _FootballRoster.Add(new Player("Troy Polamalu", "Pittsburgh Steelers", new DateTime(1981, 04, 19), 207, 71.5, 11750000));
+            _FootballRoster.Add(new Player("Micheal Vick", "Atlanta Falcons", new DateTime(1980, 06, 26), 216, 72, 7600000));
 
-            if (_FootballRoster == null) { _FootballRoster = new List<Player>(); }
+            BindData();
+        }
+        private void LoadDetails()
+        { 
+           if (dgvRoster.SelectedRows.Count == 0) { return; }
+                Player p = (Player) dgvRoster.SelectedRows[0].DataBoundItem;
 
-            Player p = new Player("Joshua Withers", "Baltimore Ravens", DateTime.Parse("01/24/1986"), 200, 62, 150000);
-            _FootballRoster.Add(p);
-            p = new Player("Lord Farquad", "New England Patriots", DateTime.Parse("05/24/1990"), 250, 42, 856243);
-            _FootballRoster.Add(p);
-            p = new Player("Paul Martin", "Pittsburgh Steelers", DateTime.Parse("10/27/1971"), 176, 58, 987654);
-            _FootballRoster.Add(p);
-            p = new Player("Michael Meyers", "New York Giants", DateTime.Parse("03/24/1965"), 160, 60, 111111);
-            _FootballRoster.Add(p);
-            p = new Player("Christian Grey", "San Francisco 49ers", DateTime.Parse("08/02/1992"), 202, 56, 300000);
-            _FootballRoster.Add(p);
-
-            RosterDisplay();
+                txtName.Text = p.Name;
+                txtTeam.Text = p.Team;
+                txtBirthday.Text = (p.Birthday.ToShortDateString());
+                txtHeight.Text  = (p.Height.ToString());
+                txtWeight.Text = (p.Weight.ToString());
+                txtSalary.Text = (p.Salary.ToString("c"));
+            
+            
         }
 
-        private void RosterDisplay()
+        private void BindData()
         {
-            StringBuilder roster = new StringBuilder();
-            foreach (Player p in _FootballRoster)
+            dgvRoster.DataSource = typeof(List<Player>);
+            dgvRoster.DataSource = _FootballRoster; 
+            AdjustColumnOrder();
+        }
+  
+        private void AdjustColumnOrder()
+        {
+            dgvRoster.Columns["Name"].DisplayIndex = 0;
+            dgvRoster.Columns["Team"].DisplayIndex = 1;
+            dgvRoster.Columns["Birthday"].DisplayIndex = 2;
+            dgvRoster.Columns["Height"].DisplayIndex = 3;
+            dgvRoster.Columns["Weight"].DisplayIndex = 4;
+            dgvRoster.Columns["Salary"].DisplayIndex = 5;
+
+           
+        }
+
+        private void ClearControls()
+        {
+            txtName.Text = string.Empty;
+            txtTeam.Text = string.Empty;
+            txtBirthday.Text = string.Empty;
+            txtHeight.Text = string.Empty;
+            txtWeight.Text = string.Empty;
+            txtSalary.Text = string.Empty;
+            gbSortBy.BackColor = DefaultBackColor;
+            _FootballRoster.Clear();
+        }
+        private void SetButtons(ref GroupBox GBX , Button btn)
+        {
+  
+            foreach (Button b in GBX.Controls)
             {
-                roster.AppendLine("Name:" + p.Name);
-                roster.AppendLine("Team:" + p.Team);
-                roster.AppendLine("Birthday:" + p.Birthday.ToShortDateString());
-                roster.AppendLine("Weight:" + p.Weight);
-                roster.AppendLine("Height:" + p.Height);
-                roster.AppendLine("Salary:" + p.Salary );
+                if (b.Name == btn.Name)
+                {
+                    b.BackColor = Color.LightGreen;
+                }
+                else
+                {
+                    b.BackColor = DefaultBackColor;
+                }
             }
-            txtDisplay.AppendText(roster.ToString());
+        }
+        
+        private void btnName_Click(object sender, EventArgs e)
+        { 
+            if (sender == btnName)
+            {
+              
+                _FootballRoster = _FootballRoster.OrderBy(x => x.Name).ToList();   
+            }
+
+            _FootballRoster = _FootballRoster.OrderByDescending(x => x.Name).ToList();
+
+
+            SetButtons(ref gbSortBy, sender as Button);
+            BindData();
+        }
+
+        private void btnTeam_Click(object sender, EventArgs e)
+        {
+            if (sender == btnTeam)
+            {
+                
+                _FootballRoster = _FootballRoster.OrderBy(x => x.Team).ToList();
+                
+            }
+            _FootballRoster = _FootballRoster.OrderByDescending(x => x.Team).ToList();
+
+
+            SetButtons(ref gbSortBy, sender as Button);
+            
+        }
+        private void btnBDay_Click(object sender, EventArgs e)
+        {
+            
+            if (sender == btnBDay)
+            {
+                
+                _FootballRoster = _FootballRoster.OrderBy(x => x.Birthday).ToList();
+               
+            }
+            _FootballRoster = _FootballRoster.OrderByDescending(x => x.Birthday).ToList();
+
+            SetButtons(ref gbSortBy, sender as Button);
+           
         }
 
         private void btnHeight_Click(object sender, EventArgs e)
         {
+           
             if (sender == btnHeight)
             {
+                
                 _FootballRoster = _FootballRoster.OrderBy(x => x.Height).ToList();
-                sort = "Height";
             }
+            _FootballRoster = _FootballRoster.OrderByDescending(x => x.Height).ToList();
+
+
+            SetButtons(ref gbSortBy, sender as Button);
+            BindData();
         }
-        private void btnName_Click(object sender, EventArgs e)
-        {
-            if (sender == btnName)
-                _FootballRoster = _FootballRoster.OrderBy(x => x.Name).ToList();
-            sort = "Name";
-        }
-        private void btnTeam_Click(object sender, EventArgs e)
-        {
-            if (sender == btnTeam)
-                _FootballRoster = _FootballRoster.OrderBy(x => x.Team).ToList();
-            sort = "Team";
-        }
-        private void btnBirthday_Click(object sender, EventArgs e)
-        {
-            if (sender == btnBirthday)
-                _FootballRoster = _FootballRoster.OrderBy(x => x.Team).ToList();
-            sort = "Birthday";
-        }
+
         private void btnWeight_Click(object sender, EventArgs e)
         {
+            
             if (sender == btnWeight)
+            {
+               
                 _FootballRoster = _FootballRoster.OrderBy(x => x.Weight).ToList();
-            sort = "Weight";
+            }
+            _FootballRoster = _FootballRoster.OrderByDescending(x => x.Weight).ToList();
+
+
+            SetButtons(ref gbSortBy, sender as Button);
+            BindData();
         }
+
         private void btnSalary_Click(object sender, EventArgs e)
         {
             if (sender == btnSalary)
+            {
+                
                 _FootballRoster = _FootballRoster.OrderBy(x => x.Salary).ToList();
-            sort = "Salary";
+            }
+            _FootballRoster = _FootballRoster.OrderByDescending(x => x.Salary).ToList();
+
+
+            SetButtons(ref gbSortBy, sender as Button);
+            BindData();
         }
 
+        private void frmMain_Load(object sender, EventArgs e)
+        {
+
+            _FootballRoster = new List<Player>();
+            BindData();
+        }
+    
         private void btnClose_Click(object sender, EventArgs e)
         {
-            CancelButton = btnClose;
             this.Close();
+            BindData();
         }
-        private void rbUSACurr_CheckedChanged(object sender, EventArgs e)
-        {
 
-
-        }
-        private void rbCanCur_CheckedChanged(object sender, EventArgs e)
-        {
-
-
-        }
         private void btnClear_Click(object sender, EventArgs e)
         {
             ClearControls();
             btnAdd.Enabled = true;
-            btnDisplay.Enabled = false;
-
+            BindData();
         }
 
+        private void dgvRoster_SelectionChanged(object sender, EventArgs e)
+        {
+            LoadDetails();
+        }
+
+        private void dgvRoster_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.ColumnIndex == dgvRoster.Columns["Height"].Index && e.RowIndex != this.dgvRoster.NewRowIndex)
+            {
+                double inches = (double)(e.Value) % 12;
+                double feet = (double)(e.Value) / (12);
+                e.Value = Math.Round (feet, 0) + "'" + inches + "''";
 
 
+
+            }
+
+        }
     }
 
