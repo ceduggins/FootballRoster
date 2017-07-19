@@ -1,0 +1,53 @@
+{
+    class Player
+    {
+        string _name;
+        string _team;
+        DateTime _birthday;
+        double _salary;
+        double _height;
+        double _weight;
+        public Player()
+        {
+        }
+        public Player(string name, string team, DateTime birthday, double weight, double height, double salary)
+        {
+            _name = name;
+            _team = team;
+            _birthday = birthday;
+            _salary = salary;
+            _height = height;
+            _weight = weight;
+        }
+        public DateTime Birthday
+        {
+            get { return _birthday; }
+            set { _birthday = value; }
+        }
+        public double Height
+        {
+            get { return _height; }
+            set { _height = value; }
+        }
+        public double Weight
+        {
+            get { return _weight; }
+            set { _weight = value; }
+        }
+        public double Salary
+        {
+            get { return _salary; }
+            set { _salary = value; }
+        }
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+        public string Team
+        {
+            get { return _team; }
+            set { _team = value; }
+        }
+    }
+}
